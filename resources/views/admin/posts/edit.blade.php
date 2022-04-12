@@ -49,9 +49,19 @@
             <div class="col-1">
                 <img src="{{old('image', $post->image) ?? 'https://media.istockphoto.com/vectors/thumbnail-image-vector-graphic-vector-id1147544807?k=20&m=1147544807&s=612x612&w=0&h=pBhz1dkwsCMq37Udtp9sfxbjaMl27JUapoyYpQm0anc='}}" alt="placeholder" class="img-fluid" id="preview">
             </div>
-        </div>
-        <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary">Save Post</button>
+            <div class="col-12">
+                <div class="form-group">
+                    @foreach($tags as $tag)
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="tag-{{$tag->id}}}}" value="{{$tag->id}}" name="tags[]" @if(in_array($tag->id, old('tags', $post_tags_ids))) checked @endif>
+                        <label class="form-check-label" for="tag-{{$tag->id}}}}">{{$tag->label}}</label>
+                    </div>
+                    @endforeach
+                </div>
+            </div>    
+            <div class="col-12 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Save Post</button>
+            </div>
         </div>
     </form>
 @endsection
