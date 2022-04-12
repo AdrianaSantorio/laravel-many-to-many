@@ -52,7 +52,8 @@ class PostController extends Controller
             'title' => 'required|string|unique:posts|min:5|max:50',
             'content' => 'required|string',
             'image' => 'nullable|url',
-            'category_id' => 'nullable|exists:categories,id'
+            'category_id' => 'nullable|exists:categories,id',
+            'tags' => 'nullable|exists:tags,id'
         ], [
             'title.required' => 'The title field must be filled',
             'title.unique' => "A post titled '$request->title' was already posted"
@@ -65,6 +66,8 @@ class PostController extends Controller
 
         $post->fill($data);
         $post->save();
+
+        if (array_key_exists('tags', $data)) $post->tags()->attach($data['tags']);
 
         return redirect()->route('admin.posts.index')->with('message', 'Post created successfully')->with('type', 'success');
     }
