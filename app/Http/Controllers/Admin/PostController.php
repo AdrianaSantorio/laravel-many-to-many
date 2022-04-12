@@ -113,7 +113,8 @@ class PostController extends Controller
             'title' => ['required', 'string', Rule::unique('posts')->ignore($post->id), 'min:5', 'max:50'],
             'content' => 'required|string',
             'image' => 'nullable|url',
-            'category_id' => 'nullable|exists:categories,id'
+            'category_id' => 'nullable|exists:categories,id',
+            'tags' => 'nullable|exists:tags,id'
         ], [
             'title.required' => 'The title field must be filled',
             'title.unique' => "A post titled '$request->title' was already posted"
@@ -122,6 +123,9 @@ class PostController extends Controller
         $data = $request->all();
         $data['slug'] = Str::slug($request->title, '-');
         $post->update($data);
+
+        if (!array_key_exists('tags', $data)) $post->tags()->detach();
+        else $post->tags()->sync($data['tags']);
 
         return redirect()->route('admin.posts.show', $post->id)->with('message', "You have updated '$post->title'")->with('type', 'warning');
     }
